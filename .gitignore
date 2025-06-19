@@ -1,0 +1,33 @@
+# Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+test/output/
+plenary_test_results.txt
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Documentation build
+doc/tags
+
+# Node.js
+node_modules/
+bun.lockb
+
+# Lefthook
+.lefthook-local/

@@ -1,0 +1,204 @@
+*yank-for-claude.txt*  Yank code references in Claude AI's preferred format
+
+==============================================================================
+CONTENTS                                            *yank-for-claude-contents*
+
+1. Introduction .......................... |yank-for-claude-introduction|
+2. Installation .......................... |yank-for-claude-installation|
+3. Usage ................................. |yank-for-claude-usage|
+4. Commands .............................. |yank-for-claude-commands|
+5. Configuration ......................... |yank-for-claude-configuration|
+6. Mappings .............................. |yank-for-claude-mappings|
+7. Stack Management ...................... |yank-for-claude-stack|
+8. Integration ........................... |yank-for-claude-integration|
+
+==============================================================================
+1. INTRODUCTION                                 *yank-for-claude-introduction*
+
+yank-for-claude.nvim is a Neovim plugin that formats code references in 
+Claude AI's preferred format: `@filename#L10-20`. This makes it seamless to 
+share code context in conversations with Claude AI.
+
+Features:
+- Smart format: `@file.lua#L10-L20` for multi-line, `@file.lua#L10` for single
+- Visual mode support with natural selection
+- Yank highlight integration with `TextYankPost`
+- Stack management for multiple references
+- Telescope integration for browsing stacked references
+
+==============================================================================
+2. INSTALLATION                                 *yank-for-claude-installation*
+
+Using lazy.nvim: >lua
+  {
+    'wasabeef/yank-for-claude.nvim',
+    config = function()
+      require('yank-for-claude').setup()
+    end,
+    keys = {
+      { '<leader>y', function() require('yank-for-claude').yank_visual() end,
+        mode = 'v', desc = 'Yank for Claude' },
+      { '<leader>y', function() require('yank-for-claude').yank_line() end,
+        mode = 'n', desc = 'Yank line for Claude' },
+    },
+  }
+<
+
+Using packer.nvim: >lua
+  use {
+    'wasabeef/yank-for-claude.nvim',
+    config = function()
+      require('yank-for-claude').setup()
+    end
+  }
+<
+
+==============================================================================
+3. USAGE                                              *yank-for-claude-usage*
+
+Basic Usage:
+
+1. Visual Mode: Select code and press your mapped key (e.g., `<leader>y`)
+   The selected code reference will be copied to clipboard
+
+2. Normal Mode: Press your mapped key to yank current line reference
+
+3. Command Mode: Use `:YankForClaude` with visual selection or range
+
+Examples:
+
+Select a function in visual mode, then `<leader>y`:
+Result in clipboard: `@src/utils.lua#L45-L67`
+
+On a single line in normal mode, then `<leader>y`:
+Result in clipboard: `@src/utils.lua#L45`
+
+Include content with the reference: >vim
+  :'<,'>YankForClaude content
+<
+
+==============================================================================
+4. COMMANDS                                        *yank-for-claude-commands*
+
+*:YankForClaude* [content]
+    Yank code reference for selected lines or current line.
+    With 'content' argument, includes the actual code content.
+
+*:YankForClaudeAdd* [content]
+    Same as |:YankForClaude| but also adds the reference to the stack.
+
+*:YankForClaudeStack*
+    Open Telescope picker to browse and manage the reference stack.
+    Requires telescope.nvim.
+
+*:YankForClaudeClear*
+    Clear all references from the stack.
+
+All commands support range, so they work with visual selection: >vim
+  :'<,'>YankForClaude
+  :10,20YankForClaude
+<
+
+==============================================================================
+5. CONFIGURATION                             *yank-for-claude-configuration*
+
+Setup with default configuration: >lua
+  require('yank-for-claude').setup()
+<
+
+Setup with custom configuration: >lua
+  require('yank-for-claude').setup({
+    -- Maximum number of references in stack
+    stack_size = 50,
+    
+    -- Include actual code content with reference
+    include_content = false,
+    
+    -- Show notifications after yanking
+    notify = true,
+    
+    -- Telescope mappings for stack browser
+    telescope_mappings = {
+      yank = '<CR>',    -- Yank selected reference
+      delete = '<C-d>'  -- Delete from stack
+    }
+  })
+<
+
+Configuration options:
+
+*stack_size*        number (default: 50)
+                  Maximum number of references to keep in stack.
+
+*include_content*   boolean (default: false)
+                  When true, includes the actual code content along
+                  with the reference.
+
+*notify*           boolean (default: true)
+                  Show notification after yanking.
+
+*telescope_mappings* table
+                   Mappings for telescope picker actions.
+
+==============================================================================
+6. MAPPINGS                                        *yank-for-claude-mappings*
+
+The plugin provides functions for custom key mappings:
+
+*yank_visual()*     For visual mode - yanks reference of selected lines
+*yank_line()*       For normal mode - yanks reference of current line
+
+Example mappings: >lua
+  vim.keymap.set('v', '<leader>y', 
+    function() require('yank-for-claude').yank_visual() end,
+    { desc = 'Yank for Claude' })
+    
+  vim.keymap.set('n', '<leader>y',
+    function() require('yank-for-claude').yank_line() end,
+    { desc = 'Yank line for Claude' })
+<
+
+Using with commands: >lua
+  vim.keymap.set('v', '<leader>y', ':YankForClaude<cr>',
+    { desc = 'Yank for Claude' })
+<
+
+==============================================================================
+7. STACK MANAGEMENT                                  *yank-for-claude-stack*
+
+The plugin maintains a stack of yanked references for easy access to 
+previously yanked code references.
+
+Stack operations:
+- Add to stack: Use |:YankForClaudeAdd| command
+- Browse stack: Use |:YankForClaudeStack| command (requires telescope.nvim)
+- Clear stack: Use |:YankForClaudeClear| command
+
+The stack stores references with timestamps and is limited by the 
+`stack_size` configuration option. Newest references are added to the top.
+
+In the Telescope picker:
+- `<CR>` (or configured yank key): Copy selected reference to clipboard
+- `<C-d>` (or configured delete key): Remove reference from stack
+
+==============================================================================
+8. INTEGRATION                                  *yank-for-claude-integration*
+
+Clipboard Integration:
+The plugin sets both `+` and `*` registers for maximum compatibility across
+different systems.
+
+Yank Highlight:
+The plugin respects existing `TextYankPost` autocmds, so yanked selections
+will be highlighted according to your configuration.
+
+File Paths:
+File paths are relative to your current working directory, making references
+portable across different machines.
+
+Telescope Integration:
+When telescope.nvim is installed, you can use |:YankForClaudeStack| to
+browse and manage your reference stack with a nice UI.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

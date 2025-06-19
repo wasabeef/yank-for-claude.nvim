@@ -1,0 +1,38 @@
+{
+  "name": "yank-for-claude.nvim",
+  "version": "0.1.0",
+  "description": "Neovim plugin to yank code references in Claude AI's preferred format",
+  "scripts": {
+    "test": "bun test:unit && bun test:format",
+    "test:unit": "nvim --headless -u tests/minimal_init.vim -c \"PlenaryBustedDirectory tests/\" +qa",
+    "test:format": "stylua --check .",
+    "format": "stylua . && prettier --write .",
+    "lint": "luacheck . --exclude-files tests/ || echo 'Note: Install luacheck with: brew install luacheck'",
+    "install-test-deps": "./scripts/install-test-deps.sh",
+    "prepare": "lefthook install"
+  },
+  "keywords": [
+    "neovim",
+    "nvim",
+    "claude",
+    "yank",
+    "plugin"
+  ],
+  "author": {
+    "name": "Daichi Furiya",
+    "url": "https://github.com/wasabeef"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wasabeef/yank-for-claude.nvim.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wasabeef/yank-for-claude.nvim/issues"
+  },
+  "homepage": "https://github.com/wasabeef/yank-for-claude.nvim#readme",
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "lefthook": "^1.10.22"
+  }
+}

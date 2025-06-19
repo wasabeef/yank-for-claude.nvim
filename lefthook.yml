@@ -1,0 +1,36 @@
+# Lefthook configuration
+# https://github.com/evilmartians/lefthook
+
+pre-commit:
+  parallel: true
+  commands:
+    lua-format:
+      glob: '*.lua'
+      run: stylua --check {staged_files}
+    lua-lint:
+      glob: '*.lua'
+      run: luacheck {staged_files}
+    tests:
+      run: bun run test
+
+pre-push:
+  parallel: true
+  commands:
+    tests:
+      run: bun run test
+
+commit-msg:
+  commands:
+    conventional:
+      run: |
+        # Simple conventional commit check
+        if ! grep -qE "^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+" {1}; then
+          echo "Commit message must follow conventional commits format:"
+          echo "  <type>(<scope>): <subject>"
+          echo ""
+          echo "Examples:"
+          echo "  feat: add new yank function"
+          echo "  fix(config): resolve notification issue"
+          echo "  docs: update README"
+          exit 1
+        fi
