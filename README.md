@@ -6,6 +6,8 @@
 
 A Neovim plugin that yanks code references in Claude AI's preferred format (`@filename#L10-20`), making it seamless to share code context in conversations.
 
+https://github.com/user-attachments/assets/a5f42615-9639-4b90-b207-c7a8ddaa136b
+
 ## ✨ Features
 
 - **Smart Format**: Automatically formats code references as `@file.lua#L10-L20` for multi-line or `@file.lua#L10` for single line
