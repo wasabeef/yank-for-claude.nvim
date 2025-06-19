@@ -22,7 +22,7 @@ jobs:
         id: release_notes
         with:
           config: .github/cliff.toml
-          args: -vv --latest --strip header
+          args: --latest --strip header
 
       - name: Create Release
         id: create_release
