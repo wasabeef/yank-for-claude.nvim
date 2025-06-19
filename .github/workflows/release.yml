@@ -19,27 +19,19 @@ jobs:
 
       - name: Generate changelog
         uses: orhun/git-cliff-action@v3
-        id: git-cliff
+        id: release_notes
         with:
           config: .github/cliff.toml
           args: -vv --latest --strip header
-        env:
-          OUTPUT: CHANGELOG.md
-
-      - name: Read changelog
-        id: changelog
-        run: |
-          CHANGELOG=$(cat "${{ steps.git-cliff.outputs.changelog }}")
-          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
+        id: create_release
         uses: softprops/action-gh-release@v1
-        with:
-          body: ${{ steps.changelog.outputs.CHANGELOG }}
-          draft: false
-          prerelease: false
-          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body: ${{ steps.release_notes.outputs.content }}
+          draft: false
+          prerelease: false
