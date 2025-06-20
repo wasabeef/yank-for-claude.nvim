@@ -6,7 +6,7 @@
 
 A Neovim plugin that yanks code references in Claude AI's preferred format (`@filename#L10-20`), making it seamless to share code context in conversations.
 
-https://github.com/user-attachments/assets/a5f42615-9639-4b90-b207-c7a8ddaa136b
+https://github.com/user-attachments/assets/b65c64a0-73d4-4d28-a14f-3274f7ac4371
 
 ## ✨ Features
 
